@@ -32,7 +32,7 @@ class RippleLocationState extends State<RippleLocation> {
       context,
       RippleRouteBuilder(
         page: widget,
-        duration: this.widget.duration + this.widget.duration,
+        duration: this.widget.duration,
       ),
     );
   }
