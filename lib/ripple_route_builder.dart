@@ -13,10 +13,7 @@ class RippleRouteBuilder<T> extends PageRouteBuilder<T> {
             secondaryAnimation,
             child,
           ) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+            return FadeTransition(opacity: animation, child: child);
           },
         );
 }

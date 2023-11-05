@@ -6,7 +6,7 @@ class RippleLocation extends StatefulWidget {
   final Widget child;
   final GlobalKey<RippleLocationState> rippleController;
   final Duration duration;
-
+  final Color? rippleColor;
   final double? rippleSize;
 
   const RippleLocation({
@@ -14,6 +14,7 @@ class RippleLocation extends StatefulWidget {
     required this.rippleController,
     this.duration = const Duration(milliseconds: 600),
     this.rippleSize,
+    this.rippleColor,
   }) : super(key: rippleController);
 
   @override
@@ -42,31 +43,23 @@ class RippleLocationState extends State<RippleLocation> {
     dynamic arguments,
   }) {
     forwardRipple();
-    Navigator.pushNamed(
-      context,
-      route,
-      arguments: arguments,
-    );
+    Navigator.pushNamed(context, route, arguments: arguments);
   }
 
   /// this method for only animating Ripple effect from the [RippleLocation] widget
-  forwardRipple() async {
-    rippleController.currentState?.animate();
-    // await Future.delayed(duration);
-  }
+  void forwardRipple() async => rippleController.currentState?.animate();
 
-  reverseRipple() {
-    rippleController.currentState?.reverseAnimate();
-  }
+  void reverseRipple() => rippleController.currentState?.reverseAnimate();
 
-  handleRippleAnimation() async {
-    RenderBox? findRenderObject =
+  void handleRippleAnimation() async {
+    final findRenderObject =
         _rippleLocationKey.currentContext?.findRenderObject() as RenderBox?;
-    var widgetSize = findRenderObject!.size;
+    final widgetSize = findRenderObject!.size;
     Offset localToGlobal = findRenderObject.localToGlobal(Offset(
       widgetSize.width / 2,
       widgetSize.height / 2,
     ));
+
     final fullScreenSize = 2 * MediaQuery.of(context).size.longestSide;
     Overlay.of(context).insert(
       OverlayEntry(builder: (BuildContext context) {
@@ -75,6 +68,7 @@ class RippleLocationState extends State<RippleLocation> {
           rippleController: rippleController,
           duration: widget.duration,
           fullScreenSize: widget.rippleSize ?? fullScreenSize,
+          rippleColor: widget.rippleColor,
         );
       }),
     );

@@ -5,8 +5,8 @@ class RippleCircle extends StatefulWidget {
   final Offset currentPosition;
   final Curve curve;
   final GlobalKey<RippleCircleState> rippleController;
-
   final double fullScreenSize;
+  final Color? rippleColor;
 
   const RippleCircle({
     required this.duration,
@@ -14,6 +14,7 @@ class RippleCircle extends StatefulWidget {
     required this.rippleController,
     required this.fullScreenSize,
     this.curve = Curves.linearToEaseOut,
+    this.rippleColor,
   }) : super(key: rippleController);
 
   @override
@@ -22,12 +23,10 @@ class RippleCircle extends StatefulWidget {
 
 class RippleCircleState extends State<RippleCircle>
     with TickerProviderStateMixin {
-  late AnimationController sizeAnimationController;
-  late AnimationController opacityAnimationController;
-
-  late Animation opacityAnimation;
-
-  late Animation sizeAnimation;
+  late final AnimationController sizeAnimationController;
+  late final AnimationController opacityAnimationController;
+  late final Animation opacityAnimation;
+  late final Animation sizeAnimation;
 
   animate() async {
     sizeAnimationController.forward();
@@ -35,14 +34,12 @@ class RippleCircleState extends State<RippleCircle>
     await Future.delayed(widget.duration);
     opacityAnimationController.reverse();
     sizeAnimationController.reverse();
-    // reverseAnimate();
   }
 
   reverseAnimate() {
     sizeAnimationController.forward(from: 1);
     opacityAnimationController.forward(from: 1);
     sizeAnimationController.reverse();
-    // opacityAnimationController.reverse();
   }
 
   @override
@@ -56,28 +53,18 @@ class RippleCircleState extends State<RippleCircle>
       vsync: this,
       duration: widget.duration,
     );
-    sizeAnimation = Tween<double>(
-      begin: 0,
-      end: widget.fullScreenSize,
-    ).animate(
+    sizeAnimation = Tween<double>(begin: 0, end: widget.fullScreenSize).animate(
       CurvedAnimation(
         parent: sizeAnimationController,
         curve: widget.curve,
       ),
     );
     opacityAnimation = Tween<double>(begin: .5, end: 1).animate(
-      CurvedAnimation(
-        parent: opacityAnimationController,
-        curve: widget.curve,
-      ),
+      CurvedAnimation(parent: opacityAnimationController, curve: widget.curve),
     );
 
-    sizeAnimation.addListener(() {
-      setState(() {});
-    });
-    opacityAnimation.addListener(() {
-      setState(() {});
-    });
+    sizeAnimation.addListener(() => setState(() {}));
+    opacityAnimation.addListener(() => setState(() {}));
   }
 
   @override
@@ -92,7 +79,7 @@ class RippleCircleState extends State<RippleCircle>
           width: sizeAnimation.value,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Theme.of(context).colorScheme.secondary,
+            color: widget.rippleColor ?? Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
