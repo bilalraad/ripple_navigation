@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ripple_navigation/ripple_navigation.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,33 +17,26 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Ripple Navigation Demo'),
+      home: const MyHomePage(title: 'Ripple Navigation Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RippleLocationState> rippleController = GlobalKey();
 
-  /// this method for only animating Ripple effect from the [RippleLocation] widget
-  void animateRipple() {
-    rippleController.currentState?.forwardRipple();
-  }
-
   void onPressed() {
-    rippleController.currentState?.pushRippleTransitionPage(
-      context,
-      SecondPage(),
-    );
+    rippleController.currentState
+        ?.pushRippleTransitionPage(context, const SecondPage());
   }
 
   @override
@@ -50,13 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Center(
               child: Text(
-                'You can wrap any widget with RippleLocation widget and after that pass the controller parameter.',
+                'You can wrap any widget with RippleLocation widget and after '
+                'that pass the controller parameter.',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -68,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: FloatingActionButton(
           onPressed: onPressed,
           tooltip: 'Increment',
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
       ),
     );
@@ -76,18 +72,16 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Theme.of(context).accentColor,
-      appBar: AppBar(
-        title: Text('Page 2'),
-        backgroundColor: Colors.black,
-      ),
-      body: Center(
-        child: Text(
-          'Page 2',
-        ),
+      appBar:
+          AppBar(title: const Text('Page 2'), backgroundColor: Colors.black),
+      body: const Center(
+        child: Text('Page 2'),
       ),
     );
   }
