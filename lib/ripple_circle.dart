@@ -24,23 +24,16 @@ class RippleCircle extends StatefulWidget {
 class RippleCircleState extends State<RippleCircle>
     with TickerProviderStateMixin {
   late final AnimationController sizeAnimationController;
-  late final AnimationController opacityAnimationController;
-  late final Animation opacityAnimation;
   late final Animation sizeAnimation;
 
-  animate() async {
-    sizeAnimationController.forward();
-    opacityAnimationController.forward();
-    await Future.delayed(widget.duration);
-    opacityAnimationController.reverse();
-    sizeAnimationController.reverse();
+  void animate() async {
+    await forwardAnimate();
+    reverseAnimate();
   }
 
-  reverseAnimate() {
-    sizeAnimationController.forward(from: 1);
-    opacityAnimationController.forward(from: 1);
-    sizeAnimationController.reverse();
-  }
+  Future<void> forwardAnimate() async => sizeAnimationController.forward();
+
+  void reverseAnimate() => sizeAnimationController.reverse();
 
   @override
   void initState() {
@@ -49,40 +42,34 @@ class RippleCircleState extends State<RippleCircle>
       vsync: this,
       duration: widget.duration,
     );
-    opacityAnimationController = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+
     sizeAnimation = Tween<double>(begin: 0, end: widget.fullScreenSize).animate(
       CurvedAnimation(
         parent: sizeAnimationController,
         curve: widget.curve,
       ),
     );
-    opacityAnimation = Tween<double>(begin: .5, end: 1).animate(
-      CurvedAnimation(parent: opacityAnimationController, curve: widget.curve),
-    );
-
-    sizeAnimation.addListener(() => setState(() {}));
-    opacityAnimation.addListener(() => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: widget.currentPosition.dy - (sizeAnimation.value / 2),
-      left: widget.currentPosition.dx - (sizeAnimation.value / 2),
-      child: Opacity(
-        opacity: opacityAnimation.value > 1 ? 1.0 : opacityAnimation.value,
-        child: Container(
-          height: sizeAnimation.value,
-          width: sizeAnimation.value,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: widget.rippleColor ?? Theme.of(context).colorScheme.primary,
+    return ValueListenableBuilder(
+      valueListenable: sizeAnimation,
+      builder: (context, size, _) {
+        return Positioned(
+          top: widget.currentPosition.dy - (size / 2),
+          left: widget.currentPosition.dx - (size / 2),
+          child: Container(
+            height: size,
+            width: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  widget.rippleColor ?? Theme.of(context).colorScheme.primary,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

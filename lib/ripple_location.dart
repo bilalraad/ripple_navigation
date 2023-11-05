@@ -5,14 +5,17 @@ import 'package:ripple_navigation/ripple_route_builder.dart';
 class RippleLocation extends StatefulWidget {
   final Widget child;
   final GlobalKey<RippleLocationState> rippleController;
-  final Duration duration;
+  final Duration animationDuration;
+  final Duration pageTransitionDuration;
+
   final Color? rippleColor;
   final double? rippleSize;
 
   const RippleLocation({
     required this.child,
     required this.rippleController,
-    this.duration = const Duration(milliseconds: 600),
+    this.animationDuration = const Duration(milliseconds: 1000),
+    this.pageTransitionDuration = const Duration(milliseconds: 200),
     this.rippleSize,
     this.rippleColor,
   }) : super(key: rippleController);
@@ -24,49 +27,47 @@ class RippleLocation extends StatefulWidget {
 class RippleLocationState extends State<RippleLocation> {
   GlobalKey _rippleLocationKey = GlobalKey();
 
-  GlobalKey<RippleCircleState> rippleController = GlobalKey();
+  final _rippleCircleController = GlobalKey<RippleCircleState>();
 
-  pushRippleTransitionPage(BuildContext context, Widget widget) {
-    forwardRipple();
+  void pushRippleTransitionPage(Widget page) async {
+    await startAnimation();
     Navigator.push(
       context,
       RippleRouteBuilder(
-        page: widget,
-        duration: this.widget.duration,
+        page: page,
+        duration: widget.pageTransitionDuration,
       ),
     );
   }
 
-  pushRippleTransitionWithRouteName(
-    BuildContext context, {
+  void pushRippleTransitionWithRouteName({
     required String route,
     dynamic arguments,
-  }) {
-    forwardRipple();
+  }) async {
+    await startAnimation();
     Navigator.pushNamed(context, route, arguments: arguments);
   }
 
   /// this method for only animating Ripple effect from the [RippleLocation] widget
-  void forwardRipple() async => rippleController.currentState?.animate();
-
-  void reverseRipple() => rippleController.currentState?.reverseAnimate();
+  Future<void> startAnimation() async =>
+      _rippleCircleController.currentState!.animate();
 
   void handleRippleAnimation() async {
     final findRenderObject =
-        _rippleLocationKey.currentContext?.findRenderObject() as RenderBox?;
+        _rippleLocationKey.currentContext!.findRenderObject() as RenderBox?;
     final widgetSize = findRenderObject!.size;
-    Offset localToGlobal = findRenderObject.localToGlobal(Offset(
+    final localToGlobal = findRenderObject.localToGlobal(Offset(
       widgetSize.width / 2,
       widgetSize.height / 2,
     ));
 
     final fullScreenSize = 2 * MediaQuery.of(context).size.longestSide;
     Overlay.of(context).insert(
-      OverlayEntry(builder: (BuildContext context) {
+      OverlayEntry(builder: (_) {
         return RippleCircle(
           currentPosition: localToGlobal,
-          rippleController: rippleController,
-          duration: widget.duration,
+          rippleController: _rippleCircleController,
+          duration: widget.animationDuration,
           fullScreenSize: widget.rippleSize ?? fullScreenSize,
           rippleColor: widget.rippleColor,
         );

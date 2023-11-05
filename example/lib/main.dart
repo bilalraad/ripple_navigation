@@ -35,8 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RippleLocationState> rippleController = GlobalKey();
 
   void onPressed() {
-    rippleController.currentState
-        ?.pushRippleTransitionPage(context, const SecondPage());
+    rippleController.currentState?.pushRippleTransitionPage(const SecondPage());
   }
 
   @override
