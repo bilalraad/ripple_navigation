@@ -9,13 +9,12 @@ class RippleCircle extends StatefulWidget {
   final double fullScreenSize;
 
   const RippleCircle({
-    Key key,
-    this.duration,
-    this.currentPosition,
-    this.rippleController,
-    this.fullScreenSize,
+    required this.duration,
+    required this.currentPosition,
+    required this.rippleController,
+    required this.fullScreenSize,
     this.curve = Curves.linearToEaseOut,
-  }) : super(key: rippleController ?? key);
+  }) : super(key: rippleController);
 
   @override
   RippleCircleState createState() => RippleCircleState();
@@ -23,12 +22,12 @@ class RippleCircle extends StatefulWidget {
 
 class RippleCircleState extends State<RippleCircle>
     with TickerProviderStateMixin {
-  AnimationController sizeAnimationController;
-  AnimationController opacityAnimationController;
+  late AnimationController sizeAnimationController;
+  late AnimationController opacityAnimationController;
 
-  Animation opacityAnimation;
+  late Animation opacityAnimation;
 
-  Animation sizeAnimation;
+  late Animation sizeAnimation;
 
   animate() async {
     sizeAnimationController.forward();
@@ -93,7 +92,7 @@ class RippleCircleState extends State<RippleCircle>
           width: sizeAnimation.value,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
       ),

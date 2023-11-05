@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class RippleRouteBuilder<T> extends PageRouteBuilder<T> {
   RippleRouteBuilder({
-    @required Widget page,
+    required Widget page,
     Duration duration = const Duration(milliseconds: 500),
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,

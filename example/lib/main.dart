@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -33,12 +33,12 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RippleLocationState> rippleController = GlobalKey();
 
   /// this method for only animating Ripple effect from the [RippleLocation] widget
-  void animateRipple(){
-    rippleController.currentState.forwardRipple();
+  void animateRipple() {
+    rippleController.currentState?.forwardRipple();
   }
 
   void onPressed() {
-    rippleController.currentState.pushRippleTransitionPage(
+    rippleController.currentState?.pushRippleTransitionPage(
       context,
       SecondPage(),
     );
